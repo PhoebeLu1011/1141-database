@@ -1,162 +1,165 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" data-bs-theme="auto">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>使用者管理</title>
-  <!-- Bootstrap 5 (CDN) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>My To-Do List</title>
   <style>
-    /* 小強化：容器寬度、卡片陰影、表格列對齊 */
-    body { padding-block: 24px; }
-    .card { border: 0; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
-    .table td, .table th { vertical-align: middle; }
-    .empty { color:#999; text-align:center; padding:24px 0; }
+    body { 
+      font-family: "Segoe UI", Arial, sans-serif; 
+      background:#f6f5f7; 
+      color:#4a3f5c;
+    }
+    .container { 
+      max-width: 700px; 
+      margin: 50px auto; 
+      background:#fff; 
+      padding:20px; 
+      border-radius:12px; 
+      box-shadow:0 4px 10px rgba(140,122,169,0.15); 
+    }
+    h2 { 
+      text-align:center; 
+      color:#4a3f5c; 
+      font-weight:600;
+    }
+    form { 
+      display:flex; 
+      gap:10px; 
+      margin-bottom:20px; 
+      justify-content: center; 
+    }
+    input, select, button { 
+      padding:10px; 
+      border-radius:6px; 
+      border:1px solid #ccc; 
+      font-size:14px;
+    }
+    button { 
+      background:#8c7aa9; 
+      color:white; 
+      border:none; 
+      cursor:pointer; 
+      transition:0.3s;
+    }
+    button:hover { 
+      background:#a892c6; 
+    }
+    table { 
+      width:100%; 
+      border-collapse: collapse; 
+      margin-top:10px;
+    }
+    th, td { 
+      padding:12px; 
+      text-align:center; 
+      border-bottom:1px solid #eee; 
+    }
+    th { 
+      background:#f0eef3; 
+      color:#4a3f5c; 
+    }
+    .done { 
+      text-decoration: line-through; 
+      color:gray; 
+    }
+    .actions a { 
+      margin:0 5px; 
+      text-decoration:none; 
+      color:#8c7aa9; 
+      font-weight:bold; 
+    }
+    .actions a:hover { 
+      color:#a892c6; 
+    }
+    .flash { 
+      color:#c75c5c; 
+      text-align:center; 
+      margin-bottom:10px; 
+    }
+    .categories {
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      margin:20px 0;
+    }
+    .categories a {
+      padding:8px 18px;
+      border-radius:20px;
+      text-decoration:none;
+      border:1px solid #ddd;
+      color:#4a3f5c;
+      font-size:14px;
+      transition:0.3s;
+    }
+    .categories a.active {
+      background:#8c7aa9;
+      color:#fff;
+      border-color:#8c7aa9;
+    }
+    .categories a:hover {
+      background:#a892c6;
+      color:#fff;
+      border-color:#a892c6;
+    }
+
   </style>
 </head>
 <body>
-  <div class="container" style="max-width: 900px;">
-    <div class="d-flex align-items-center mb-4">
-      <h1 class="h3 mb-0">使用者管理</h1>
-      <div class="ms-auto">
-        <!-- 簡單的深淺色切換 -->
-        <button id="themeToggle" class="btn btn-outline-secondary btn-sm">切換主題</button>
-      </div>
-    </div>
+  <div class="container">
+    <h2>To-Do List</h2>
 
-    <!-- Flash 訊息 -->
+
+    <!-- flash 訊息 -->
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-          {% for m in messages %}
-            <div>{{ m }}</div>
+        <div class="flash">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
           {% endfor %}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
       {% endif %}
     {% endwith %}
 
-    <div class="row g-4">
-      <!-- 新增卡片 -->
-      <div class="col-12 col-lg-5">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="h5 mb-3">新增使用者</h2>
-            <form method="POST" action="/" class="needs-validation" novalidate>
-              <div class="mb-3">
-                <label class="form-label">姓名</label>
-                <input type="text" name="name" class="form-control" placeholder="例如：王小明" required>
-                <div class="invalid-feedback">請輸入姓名</div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">性別</label>
-                <select name="gender" class="form-select" required>
-                    <option value="">-- 請選擇 --</option>
-                    <option value="男">男</option>
-                    <option value="女">女</option>
-                    <option value="其他">其他</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="mike@example.com" required>
-                <div class="invalid-feedback">請輸入有效的 Email</div>
-              </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-primary">送出</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+    <!-- 新增任務表單 -->
+    <form action="{{ url_for('add') }}" method="post">
+      <input type="text" name="task" placeholder="輸入任務" required>
+      <select name="category">
+        <option value="work">work</option>
+        <option value="school">school</option>
+        <option value="other">other</option>
+      </select>
+      <button type="submit">新增</button>
+    </form>
 
-      <!-- 列表卡片 -->
-      <div class="col-12 col-lg-7">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center mb-3">
-              <h2 class="h5 mb-0">使用者列表</h2>
-              <form class="ms-auto" role="search" oninput="filterRows(this.q.value)">
-                <input class="form-control form-control-sm" name="q" placeholder="搜尋姓名或 Email…" />
-              </form>
-            </div>
-
-            {% if users and users|length > 0 %}
-              <div class="table-responsive">
-                <table class="table align-middle">
-                  <thead>
-                    <tr>
-                      <th style="width:72px;">#</th>
-                      <th>姓名</th>
-                      <th>Email</th>
-                      <th class="text-end" style="width:120px;">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody id="userTbody">
-                    {% for u in users %}
-                      <tr>
-                        <td><span class="badge text-bg-secondary">{{ u.id }}</span></td>
-                        <td class="name">{{ u.name }}</td>
-                        <td class="email"><a href="mailto:{{ u.email }}">{{ u.email }}</a></td>
-                        <td class="text-end">
-                          <form method="POST" action="/delete/{{ u.id }}" class="d-inline"
-                                onsubmit="return confirm('確定刪除 {{ u.name }} 嗎？');">
-                            <button class="btn btn-outline-danger btn-sm">刪除</button>
-                          </form>
-                        </td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            {% else %}
-              <div class="empty">目前沒有資料。</div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
+    <div class="categories">
+      <a href="{{ url_for('index') }}" class="{{ 'active' if not category }}">All</a>
+      <a href="{{ url_for('index', category='work') }}" class="{{ 'active' if category=='work' }}">Work</a>
+      <a href="{{ url_for('index', category='school') }}" class="{{ 'active' if category=='school' }}">School</a>
+      <a href="{{ url_for('index', category='other') }}" class="{{ 'active' if category=='other' }}">Other</a>
     </div>
+
+    <!-- 任務清單 -->
+    <table>
+      <tr>
+        <th>任務</th>
+        <th>分類</th>
+        <th>狀態</th>
+        <th>操作</th>
+      </tr>
+      {% for todo in todos %}
+      <tr class="{{ 'done' if todo.status=='完成' }}">
+        <td>{{ todo.task }}</td>
+        <td>{{ todo.category }}</td>
+        <td>{{ todo.status }}</td>
+        <td class="actions">
+          {% if todo.status != '完成' %}
+            <a href="{{ url_for('complete', todo_id=todo.id) }}">✔ 完成</a>
+          {% endif %}
+          <a href="{{ url_for('delete', todo_id=todo.id) }}">🗑 刪除</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
   </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // 表單驗證
-    (() => {
-      const forms = document.querySelectorAll('.needs-validation');
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', e => {
-          if (!form.checkValidity()) { e.preventDefault(); e.stopPropagation(); }
-          form.classList.add('was-validated');
-        }, false);
-      });
-    })();
-
-    // 列表即時搜尋
-    function filterRows(q) {
-      q = (q || '').trim().toLowerCase();
-      const rows = document.querySelectorAll('#userTbody tr');
-      rows.forEach(r => {
-        const name = r.querySelector('.name')?.textContent.toLowerCase() || '';
-        const email = r.querySelector('.email')?.textContent.toLowerCase() || '';
-        r.style.display = (name.includes(q) || email.includes(q)) ? '' : 'none';
-      });
-    }
-
-    // 主題切換（淺/深）
-    const toggleBtn = document.getElementById('themeToggle');
-    toggleBtn?.addEventListener('click', () => {
-      const html = document.documentElement;
-      const cur = html.getAttribute('data-bs-theme') || 'auto';
-      const next = cur === 'dark' ? 'light' : (cur === 'light' ? 'dark' : 'dark');
-      html.setAttribute('data-bs-theme', next);
-      localStorage.setItem('theme', next);
-    });
-    // 記住主題
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-bs-theme', saved);
-  </script>
 </body>
 </html>
