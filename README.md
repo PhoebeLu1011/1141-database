@@ -27,5 +27,8 @@ MYSQL_DB = "todolist"         # ← 先建好 DB
 MYSQL_CURSORCLASS = ""
 MYSQL_CHARSET = ""
 ```
-#### start 
+#### ▶️ How to Run
+```python
+py app.py
+```
 
