@@ -2,7 +2,7 @@
 ### HW1
 #### Goal: 
 #### Setup:
-#####  Environment Variables
+####  Environment Variables
 Create a `.env` file in the project root directory to store your database configuration and secret key.
 ```env
 # Flask secret key (for sessions, CSRF protection, etc.)
