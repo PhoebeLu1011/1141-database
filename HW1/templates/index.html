@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My To-Do List</title>
+  <style>
+    /* —— 主題色（純色、簡約） —— */
+    :root{
+      --primary-color: #475569;      /* 石板霧藍 */
+      --light-primary:#64748b;       /* hover 用 */
+      --background-light:#f4f7f6;
+      --text-dark:#333333;
+      --text-light:#ffffff;
+      --border-light:#e5e7eb;
+      --success-color:#22c55e;
+      --danger-color:#ef4444;
+    }
+
+    /* 基礎排版 */
+    html,body{ overflow-x:hidden; }
+    body{
+      font-family: 'Roboto','Segoe UI',Arial,sans-serif;
+      margin:0;
+      color:var(--text-dark);
+      background:var(--background-light);
+      padding-top:64px;  /* 給固定 navbar 空間 */
+    }
+
+    /* —— 扁平 Navbar（無漸層） —— */
+    .navbar{
+      position:fixed; top:0; left:0; width:100%; height:64px;
+      background:var(--primary-color);               /* 純色 */
+      border-bottom:1px solid rgba(0,0,0,0.08);      /* 細底線 */
+      box-shadow:0 6px 14px rgba(0,0,0,0.08);        /* 淡陰影即可 */
+      display:flex; align-items:center; justify-content:center;
+      padding:0 12px; box-sizing:border-box; z-index:1000;
+    }
+    .navbar .inner{
+      width:100%; max-width:1100px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .navbar h1{
+      color:#fff; font-size:18px; margin:0; font-weight:600; letter-spacing:.2px;
+      text-shadow:none;  /* 取消立體字效果 */
+    }
+
+    /* —— 登出按鈕（極簡幽靈樣式，無漸層） —— */
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      height:36px; padding:0 14px;
+      border-radius:999px; font-size:14px; font-weight:600; text-decoration:none;
+      border:1px solid rgba(255,255,255,.22); color:#fff; background:transparent;
+      white-space:nowrap; transition:transform .06s, box-shadow .18s, background .18s, color .18s;
+      max-width:100%;
+    }
+    .btn:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.08);
+      box-shadow:0 6px 12px rgba(0,0,0,.12);
+    }
+    .btn:active{ transform:none; }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow:0 0 0 3px rgba(255,255,255,.5),0 0 0 6px rgba(71,85,105,.45);
+    }
+     /*.btn-logout{} /* class 保留以利擴充 */
+
+    .navbar-user-info{ display:flex; align-items:center; gap:10px; min-width:0; }
+
+    @media (max-width:480px){
+      .navbar{ padding:0 8px; height:60px; }
+      .navbar h1{ font-size:16px; }
+      body{ padding-top:60px; }
+      .btn{ height:34px; padding:0 12px; font-size:13px; }
+    }
+
+    /* —— 內容區：開放式（不包大白框） —— */
+    .container{
+      max-width:1100px;
+      margin:24px auto 32px;
+      padding:0 16px;       /* 只留左右內距，整體開放 */
+      background:transparent;
+      border-radius:0;
+      box-shadow:none;
+      box-sizing:border-box;
+    }
+
+    h2{
+      text-align:center; color:var(--primary-color);
+      font-weight:700; margin:8px 0 18px; letter-spacing:.5px;
+    }
+
+    /* 表單（開放式，無框） */
+    form{
+      display:flex; gap:10px; justify-content:center;
+      margin:0 0 18px; padding:0; border-radius:0; background:transparent;
+    }
+    input[type="text"], select{
+      padding:12px; border-radius:10px;
+      border:1px solid var(--border-light); background:#fff;
+      font-size:16px; flex-grow:1; max-width:320px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
+    }
+    button{
+      padding:12px 18px; min-width:108px;
+      border:none; border-radius:999px; cursor:pointer; font-weight:600;
+      background:var(--primary-color); color:#fff;
+      transition:transform .06s, background .18s;
+    }
+    button:hover{ background:var(--light-primary); transform:translateY(-1px); }
+
+    /* 類別 chips */
+    .categories{
+      display:flex; justify-content:center; gap:10px; margin:8px 0 18px;
+    }
+    .categories a{
+      padding:8px 16px; border-radius:999px;
+      text-decoration:none; font-size:14px; font-weight:500;
+      border:1px solid var(--border-light); color:var(--text-dark); background:#fff;
+      transition:.2s;
+    }
+    .categories a.active{
+      background:var(--primary-color); color:#fff; border-color:var(--primary-color);
+      box-shadow:0 4px 8px rgba(71,85,105,.18);
+    }
+    .categories a:hover:not(.active){
+      background:#eef2f7; color:var(--primary-color); border-color:#eef2f7;
+    }
+
+    /* 表格：保留清爽行距，整頁開放 */
+    table{ width:100%; border-collapse:separate; border-spacing:0 8px; margin-top:8px; }
+    th{
+      background:#f7f7f7; color:#111827; font-weight:600; text-transform:uppercase;
+      font-size:12.5px; letter-spacing:.5px; padding:12px; border-bottom:none;
+    }
+    td{
+      padding:14px 12px; text-align:center; background:#fff;
+      border-bottom:1px solid var(--border-light); transition:background .15s;
+    }
+    tr:hover td{ background:#fafafa; }
+    tr:last-child td{ border-bottom:none; }
+
+    .done td{ text-decoration:line-through; color:#9ca3af; }
+    .done .actions a{ color:#9ca3af; }
+
+    .actions a{
+      margin:0 8px; text-decoration:none; font-weight:600; font-size:14px;
+      color:var(--primary-color); transition:color .15s;
+    }
+    .actions a:hover{ color:var(--light-primary); }
+    .actions a[href*="complete"]{ color:var(--success-color); }
+    .actions a[href*="complete"]:hover{ color:#16a34a; }
+    .actions a[href*="delete"]{ color:var(--danger-color); }
+    .actions a[href*="delete"]:hover{ color:#ef6b6b; }
+
+    .flash{
+      color:var(--danger-color); text-align:center; margin-bottom:12px; padding:10px;
+      background:#ffebee; border:1px solid #ffcdd2; border-radius:10px;
+    }
+
+    /* 備註 hover 提示 */
+    td[title]{ cursor:help; }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="inner">
+      <h1>todo</h1>
+      <div class="navbar-user-info">
+        <a class="btn btn-logout" href="{{ url_for('logout') }}">登出</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2></h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('add') }}" method="post">
+      <input type="text" name="task" placeholder="輸入新的任務..." required>
+      <select name="category">
+        <option value="work">Work</option>
+        <option value="school">School</option>
+        <option value="other" selected>Other</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+
+    <div class="categories">
+      <a href="{{ url_for('index') }}" class="{{ 'active' if not category }}">All</a>
+      <a href="{{ url_for('index', category='work') }}" class="{{ 'active' if category=='work' }}">Work</a>
+      <a href="{{ url_for('index', category='school') }}" class="{{ 'active' if category=='school' }}">Work</a>
+      <a href="{{ url_for('index', category='other') }}" class="{{ 'active' if category=='other' }}">Other</a>
+    </div>
+
+    <table>
+      <tr>
+        <th>任務內容</th>
+        <th>分類</th>
+        <th>狀態</th>
+        <th>備註</th>
+        <th>操作</th>
+      </tr>
+      {% for todo in todos %}
+      <tr class="{{ 'done' if todo.status=='完成' }}">
+        <td>{{ todo.task }}</td>
+        <td>{{ todo.category | upper }}</td>
+        <td>
+          {% if todo.status == '完成' %}
+             完成
+          {% else %}
+            ⏱ 待辦
+          {% endif %}
+        </td>
+        <td title="{{ todo.note or '' }}">
+          {% if todo.note %}{{ todo.note[:5] ~ '...' }}{% endif %}
+        </td>
+        <td class="actions">
+          <a href="{{ url_for('edit', todo_id=todo.id) }}"> Edit</a>
+          {% if todo.status != '完成' %}
+            <a href="{{ url_for('complete', todo_id=todo.id) }}">✔ Finish</a>
+          {% endif %}
+          <a href="{{ url_for('delete', todo_id=todo.id) }}">🗑 Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>
