@@ -23,7 +23,7 @@ HW1/
 └── requirements.txt
 ```
 ### | 🔗 Important Code:
-##### (a) Flask × MySQL Configuration
+##### 1. Flask × MySQL Configuration
 ```py
 import os
 from flask import Flask
@@ -47,7 +47,7 @@ MYSQL_CURSORCLASS="DictCursor",
 )
 mysql = MySQL(app)
 ```
-#### (b.)Data Insertion 
+#### 2. Data Insertion 
 This code snippet precisely demonstrates **how Flask handles POST requests, retrieves data from a form, and inserts it into the MySQL database.**
 ```py
 # ---- 核心 SQL 執行函數 (簡潔展示) ----
@@ -77,12 +77,12 @@ def add():
 
 
 ### | ⚙️ Setup:
-#### 💻 Installation 
+#### 1. 💻 Installation 
 Install the necessary Python packages in `requirements.txt`.
 ```bash
 pip install -r requirements.txt
 ```
-#### 🔑 Environment Variables
+#### 2. 🔑 Environment Variables
 Create a .env file in the project root directory to store your database configuration and secret key. Replace the placeholder values with your actual MySQL credentials.
 ```env
 # Flask secret key (for sessions, CSRF protection, etc.)
@@ -97,7 +97,7 @@ MYSQL_DB = "todolist"
 MYSQL_CURSORCLASS = DictCursor
 MYSQL_CHARSET = utf8mb4
 ```
-#### ▶ How to Run
+#### 3. ▶ How to Run
 After setting up the database and installing dependencies, run the application:
 ```python
 py app.py
