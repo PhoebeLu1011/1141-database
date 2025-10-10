@@ -8,6 +8,8 @@ It demonstrates how to connect Flask to a MySQL database and use a frontend form
 
 ### | 🔗 Source Code:
 
+- [Source Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW1)
+
 ### | 🖼️ Interface Preview:
 
 
