@@ -17,7 +17,7 @@ It demonstrates how to connect Flask to a MySQL database and use a frontend form
 ```
 HW1/
 ├── app.py # MAIN
-├── templates/ # HTML
+├── templates/ # frontend interface
 │ ├── index.html 
 │ ├── login.html 
 │ └── edit.html 
