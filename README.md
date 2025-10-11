@@ -14,7 +14,7 @@ It demonstrates how to connect Flask to a MySQL database and use a frontend form
 
 | Register | Log in | Index |
 |----------|-----------|-----------|
-| <img src="img/hw1_register.png" width="400"/> | <img src="img/hw1_login.png" width="400"/> | <img src="img/hw1_index.png" width="400"/> |
+| <img src="img/hw1_register.png" width="600"/> | <img src="img/hw1_login.png" width="600"/> | <img src="img/hw1_index.png" width="600"/> |
 
 ### | 📁 Project Structure:
 ```
