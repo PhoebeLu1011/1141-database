@@ -28,7 +28,7 @@ HW1/
 └── requirements.txt
 ```
 ### | 🔗 Important Code:
-##### 1. Flask × MySQL Configuration 
+#### 1. Flask × MySQL Configuration 
 
 ```py
 load_dotenv()
@@ -47,7 +47,7 @@ mysql = MySQL(app)
 ```
 This configuration block connects Flask to a MySQL database using environment variables defined in the .env file.
 
-#### 2. Data Insertion 
+### 2. Data Insertion 
 This code snippet precisely demonstrates **how Flask handles POST requests, retrieves data from a form, and inserts it into the MySQL database.**
 ```py
 # Retrieve multiple records (e.g., all to-do items)
@@ -78,7 +78,7 @@ def exec_sql(sql, params=None):
     cur.close()
 
 ```
-#### 3. Handle both GET (load page) and POST (submit form) requests — Login
+### 3. Handle both GET (load page) and POST (submit form) requests — Login
 ```py
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -99,7 +99,7 @@ def login():
         return redirect(nxt or url_for("index"))
     return render_template("login.html", mode="login")
 ```
-#### 4. Add new to-do items (POST only, login required)
+### 4. Add new to-do items (POST only, login required)
 ```py
 # Display all to-do items
 @app.route("/")
@@ -128,12 +128,12 @@ def add():
 
 
 ### | ⚙️ Setup:
-#### 1. 💻 Installation 
+### 1. 💻 Installation 
 Install the necessary Python packages in `requirements.txt`.
 ```bash
 pip install -r requirements.txt
 ```
-#### 2. 🔑 Environment Variables
+### 2. 🔑 Environment Variables
 Create a .env file in the project root directory to store your database configuration and secret key. Replace the placeholder values with your actual MySQL credentials.
 ```env
 # Flask secret key (for sessions, CSRF protection, etc.)
@@ -148,7 +148,7 @@ MYSQL_DB = "todolist"
 MYSQL_CURSORCLASS = DictCursor
 MYSQL_CHARSET = utf8mb4
 ```
-#### 3. ▶ How to Run
+### 3. ▶ How to Run
 After setting up the database and installing dependencies, run the application:
 ```python
 py app.py
