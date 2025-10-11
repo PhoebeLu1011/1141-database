@@ -28,7 +28,7 @@ HW1/
 └── requirements.txt
 ```
 ### | 🔗 Important Code:
-#### 1. Flask × MySQL Configuration 
+### 1. Flask × MySQL Configuration 
 
 ```py
 load_dotenv()
