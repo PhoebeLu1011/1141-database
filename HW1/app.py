@@ -17,12 +17,11 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # 讀取 .env（若沒裝 python-dotenv 也不會壞）
 
-# ... 略 ...
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-change-me")  # 沒設就用開發預設
 
-# === MySQL 連線設定（改成讀 env） ===
+# === MySQL 連線設定（讀 env） ===
 app.config.update(
     MYSQL_HOST=os.getenv("MYSQL_HOST", "127.0.0.1"),
     MYSQL_PORT=int(os.getenv("MYSQL_PORT", "3306")),
@@ -133,6 +132,8 @@ def index():
             [g.user["id"]]
         )
     return render_template("index.html", todos=todos, category=category)
+
+
 
 
 @app.route("/add", methods=["POST"])
