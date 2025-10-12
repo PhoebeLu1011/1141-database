@@ -4,7 +4,7 @@ In Homework 1, I built a simple Flask–MySQL **to-do list** application.
 It demonstrates how to connect Flask to a MySQL database and use a frontend form to insert and display data.
 
 ### | 🎬 Demo Video:
-- YouTube link:****
+- [YouTube link](https://youtu.be/utjzXJw3qaw)
 
 ### | 🔗 Source Code:
 
