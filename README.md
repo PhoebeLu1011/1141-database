@@ -28,7 +28,9 @@ HW1/
 └── requirements.txt
 ```
 <details>
-    <summary> <h3> | 🔗 Important Code:</h3></summary>
+  <summary>
+    <span style="font-size:1.3em; font-weight:600;">🔗 Important Code:</span>
+  </summary>
     
 ### 1. Flask × MySQL Configuration 
 
