@@ -3,20 +3,20 @@
 In Homework 1, I built a simple Flask–MySQL **to-do list** application.
 It demonstrates how to connect Flask to a MySQL database and use a frontend form to insert and display data.
 
-### | 🎬 Demo Video:
+### | Demo Video:
 - [YouTube link](https://youtu.be/utjzXJw3qaw)
 
-### | 🔗 Source Code:
+### | Source Code:
 
 [Source Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW1)
 
-### | 🖼️ Interface Preview:
+### | Interface Preview:
 
 | Register | Log in | Index |
 |----------|-----------|-----------|
 | <img src="img/hw1_register.png" width="600"/> | <img src="img/hw1_login.png" width="600"/> | <img src="img/hw1_index.png" width="600"/> |
 
-### | 📁 Project Structure:
+### | Project Structure:
 ```
 HW1/
 ├── app.py # MAIN
@@ -29,7 +29,7 @@ HW1/
 ```
 <details>
   <summary>
-    <span style="font-size:1.3em; font-weight:600;">🔗 Important Code:</span>
+    <h3> | 🔗 Important Code:</h3>
   </summary>
     
 ### 1. Flask × MySQL Configuration 
@@ -131,13 +131,13 @@ def add():
 ```
 
 
-### | ⚙️ Setup:
-### 1. 💻 Installation 
+### | Setup:
+### 1. Installation 
 Install the necessary Python packages in `requirements.txt`.
 ```bash
 pip install -r requirements.txt
 ```
-### 2. 🔑 Environment Variables
+### 2. Environment Variables
 Create a .env file in the project root directory to store your database configuration and secret key. Replace the placeholder values with your actual MySQL credentials.
 ```env
 # Flask secret key (for sessions, CSRF protection, etc.)
@@ -152,7 +152,7 @@ MYSQL_DB = "todolist"
 MYSQL_CURSORCLASS = DictCursor
 MYSQL_CHARSET = utf8mb4
 ```
-### 3. ▶ How to Run
+### 3. How to Run
 After setting up the database and installing dependencies, run the application:
 ```python
 py app.py
