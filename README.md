@@ -28,7 +28,10 @@ HW1/
 └── requirements.txt
 ```
 <details>
-    <summary>### | 🔗 Important Code:</summary>
+    <summary>
+        ### | 🔗 Important Code:
+    </summary>
+    
 ### 1. Flask × MySQL Configuration 
 
 ```py
