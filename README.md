@@ -27,7 +27,8 @@ HW1/
 ├── .env
 └── requirements.txt
 ```
-### | 🔗 Important Code:
+<details>
+    <summary>### | 🔗 Important Code:</summary>
 ### 1. Flask × MySQL Configuration 
 
 ```py
@@ -153,6 +154,7 @@ After setting up the database and installing dependencies, run the application:
 ```python
 py app.py
 ```
+</details>
 
 
 
