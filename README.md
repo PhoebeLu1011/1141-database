@@ -29,7 +29,7 @@ HW1/
 ```
 <details>
   <summary>
-    <h3> | 🔗 Important Code:</h3>
+    <h3> | Important Code:</h3>
   </summary>
     
 ### 1. Flask × MySQL Configuration 
