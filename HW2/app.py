@@ -254,8 +254,8 @@ def edit(task_id):
         return redirect(url_for("index"))
 
     cats = query_all(
-    "SELECT id, name FROM categories WHERE user_id=%s ORDER BY id",
-    [g.user["id"]]
+        "SELECT id, name FROM categories WHERE user_id=%s ORDER BY id",
+        [g.user["id"]]
     )
     return render_template("edit.html", todo=row, categories=cats)
 
