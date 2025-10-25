@@ -1,3 +1,4 @@
+## Database System 
 ## HW1
 
 In Homework 1, I built a simple Flask–MySQL **to-do list** application.
@@ -171,22 +172,34 @@ The system has been upgraded from using a single database table to a three-table
 ### | Code:
 - [Code]()
 
+### | Project Structure:
+```
+HW2/
+├── app.py # MAIN
+├── templates/ # frontend interface
+│ ├── index.html #main page
+│ ├── login.html #login/register
+│ └── edit.html #edit tasks
+├── .env
+└── requirements.txt
+```
+
 ### | CRUD
 1. C - Create 
 
-- Users can add new tasks to their personal to-do list through the input form.
+  - Users can add new tasks to their personal to-do list through the input form.
 
 2. R - Read
 
-- The system presents the to-do list of the currently logged-in user, including detailed information for each task such as its name, category, status, and notes.
+  - The system presents the to-do list of the currently logged-in user, including detailed information for each task such as its name, category, status, and notes.
 
 3. U - Update
 
-- The edit function allows users to update task details or notes.
-- When the user clicks the “Finish” button at the main page, the task status changes automatically from “未完成” (not finished) to “完成” (finished).
+  - The edit function allows users to update task details or notes.
+  - When the user clicks the “Finish” button at the main page, the task status changes automatically from “未完成” (not finished) to “完成” (finished).
 
 4. D - Delete
-- Users can remove any task they no longer need by clicking the **“Delete”** button.
+  - Users can remove any task they no longer need by clicking the **“Delete”** button.
 
 
 
