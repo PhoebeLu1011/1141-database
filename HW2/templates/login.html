@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ '註冊' if mode=='register' else '登入' }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ——— 主題色與基礎色彩 ——— */
+    :root{
+      --primary-color:#475569;     /* 石板霧藍：與主站統一 */
+      --light-primary:#64748b;     /* hover 用 */
+      --bg:#f4f7f6;
+      --text:#333333;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --border:#e5e7eb;
+      --danger:#ef4444;
+    }
+
+    /* ——— 全域 ——— */
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:'Roboto','Segoe UI',Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      box-sizing:border-box;
+    }
+
+    /* ——— 容器卡片（小而精緻） ——— */
+    .container{
+      width:100%;
+      max-width:420px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:24px 22px;
+      box-shadow:0 8px 20px rgba(0,0,0,.06);
+      box-sizing:border-box;
+    }
+
+    /* 標題 */
+    h1{
+      margin:0 0 16px;
+      text-align:center;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:.3px;
+      color:var(--primary-color);
+    }
+
+    /* 表單 */
+    form{ display:grid; gap:12px; margin-top:8px; }
+
+    input{
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:15px;
+      background:#fff;
+      outline:none;
+      transition:border-color .15s, box-shadow .15s, background .15s;
+    }
+    input::placeholder{ color:#9ca3af; }
+    input:focus{
+      border-color: var(--light-primary);
+      box-shadow: 0 0 0 4px rgba(100,116,139,.15);
+    }
+
+    button{
+      height:44px;
+      padding:0 18px;
+      border:none;
+      border-radius:999px;
+      background:var(--primary-color);
+      color:#fff;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .06s, background .18s, box-shadow .18s;
+    }
+    button:hover{
+      background:var(--light-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(0,0,0,.10);
+    }
+    button:active{ transform:none; }
+    button:focus-visible{
+      outline:none;
+      box-shadow:0 0 0 4px rgba(100,116,139,.25);
+    }
+
+    /* 交替連結區 */
+    .alt{
+      margin-top:10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+    a{
+      color:var(--primary-color);
+      text-decoration:none;
+      font-weight:600;
+      transition: color .15s;
+    }
+    a:hover{ color:var(--light-primary); }
+
+    /* 訊息（Flask flash） */
+    .flash{
+      margin:6px 0 10px;
+      text-align:center;
+      color:var(--danger);
+      font-weight:600;
+      font-size:14px;
+    }
+    .flash p{ margin:6px 0; }
+
+    /* 小尺寸優化 */
+    @media (max-width:420px){
+      .container{ padding:20px 16px; border-radius:14px; }
+      h1{ font-size:18px; }
+      input{ font-size:14px; }
+      button{ height:42px; font-size:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ '註冊' if mode=='register' else '登入' }}</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for msg in messages %}<p>{{ msg }}</p>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" autocomplete="on">
+      <input name="username" placeholder="帳號" required />
+      <input name="password" type="password" placeholder="密碼" required />
+      <button type="submit">{{ '建立帳號' if mode=='register' else '登入' }}</button>
+    </form>
+
+    <div class="alt">
+      {% if mode=='register' %}
+        已有帳號？<a href="{{ url_for('login') }}">去登入</a>
+      {% else %}
+        還沒有帳號？<a href="{{ url_for('register') }}">去註冊</a>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
