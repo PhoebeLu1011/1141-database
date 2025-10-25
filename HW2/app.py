@@ -81,14 +81,32 @@ def register():
         if not username or not password:
             flash("請填寫帳號與密碼")
             return redirect(url_for("register"))
+
+        # 檢查帳號是否存在
         exists = query_one("SELECT id FROM users WHERE username=%s", [username])
         if exists:
             flash("帳號已被使用")
             return redirect(url_for("register"))
+
+        # 新增使用者
         exec_sql("INSERT INTO users (username, password) VALUES (%s, %s)", [username, password])
+
+        # ✅ 取得剛新增的 user_id
+        new_user = query_one("SELECT LAST_INSERT_ID() AS id")
+        new_uid = new_user["id"]
+
+        # ✅ 自動為新使用者建立三個分類
+        exec_sql(
+            "INSERT INTO categories (name, user_id) VALUES "
+            "('school', %s), ('work', %s), ('other', %s)",
+            [new_uid, new_uid, new_uid]
+        )
+
         flash("註冊成功，請登入")
         return redirect(url_for("login"))
+
     return render_template("login.html", mode="register")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -144,8 +162,34 @@ def index():
     todos = query_all(base_sql, params)
 
     # 供頁面選單使用
-    cats = query_all("SELECT id, name FROM categories ORDER BY id")
+    cats = query_all(
+        "SELECT id, name FROM categories WHERE user_id=%s ORDER BY id",
+        [g.user["id"]]
+    )
     return render_template("index.html", todos=todos, categories=cats, category=category_name)
+
+@app.route("/add_category", methods=["POST"])
+@login_required
+def add_category():
+    name = request.form.get("name", "").strip().lower()
+    if not name:
+        flash("分類名稱不能為空")
+        return redirect(url_for("index"))
+
+    exists = query_one(
+        "SELECT id FROM categories WHERE user_id=%s AND name=%s",
+        [g.user["id"], name]
+    )
+    if exists:
+        flash("此分類已存在")
+        return redirect(url_for("index"))
+
+    exec_sql(
+        "INSERT INTO categories (name, user_id) VALUES (%s, %s)",
+        [name, g.user["id"]]
+    )
+    flash(f"成功新增分類：{name}")
+    return redirect(url_for("index"))
 
 @app.route("/add", methods=["POST"])
 @login_required
@@ -209,7 +253,10 @@ def edit(task_id):
         flash("找不到任務")
         return redirect(url_for("index"))
 
-    cats = query_all("SELECT id, name FROM categories ORDER BY id")
+    cats = query_all(
+    "SELECT id, name FROM categories WHERE user_id=%s ORDER BY id",
+    [g.user["id"]]
+    )
     return render_template("edit.html", todo=row, categories=cats)
 
 # 只改備註（列表頁快速更新）
