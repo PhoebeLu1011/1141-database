@@ -167,7 +167,7 @@ The system has been upgraded from using a single database table to a three-table
 
 ### | Demo Video:
 
-- [YouTube link]()
+- [YouTube link](https://youtu.be/9lEN5L9RIzo)
 
 ### | Code:
 - [Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW2)
