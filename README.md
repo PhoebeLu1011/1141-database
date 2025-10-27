@@ -183,6 +183,9 @@ HW2/
 ├── .env
 └── requirements.txt
 ```
+### | ERD
+
+<img src="img/HW2_ERD.png" width="400"/>
 
 ### | CRUD
 1. C - Create 
