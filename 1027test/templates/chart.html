@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>{{ patient_id }} — Charts</h3>
+
+<!-- 篩選區（可選） -->
+<form id="rangeForm" class="grid" style="margin: .5rem 0;">
+  <div>
+    <label>Start
+      <input type="datetime-local" name="start">
+    </label>
+  </div>
+  <div>
+    <label>End
+      <input type="datetime-local" name="end">
+    </label>
+  </div>
+  <div style="align-self:end">
+    <button type="submit">Apply</button>
+  </div>
+</form>
+
+<canvas id="hrChart" style="margin-top:12px"></canvas>
+<canvas id="bpChart" style="margin-top:24px"></canvas>
+<canvas id="tempChart" style="margin-top:24px"></canvas>
+
+<!-- Chart.js + 時間座標 adapter（很重要） -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+<script>
+(async () => {
+  const urlParams = new URLSearchParams(location.search);
+  const start = urlParams.get('start');
+  const end   = urlParams.get('end');
+
+  // 將網址參數帶入表單（方便看到目前範圍）
+  if (start) document.querySelector('input[name="start"]').value = toLocalInput(start);
+  if (end)   document.querySelector('input[name="end"]').value   = toLocalInput(end);
+
+  // 讀資料
+  const q = new URLSearchParams();
+  if (start) q.set('start', start);
+  if (end)   q.set('end', end);
+
+  const res = await fetch(`/api/vitals/{{ patient_id }}${q.toString() ? '?' + q.toString() : ''}`);
+  let data = await res.json();
+
+  // 依時間排序，避免亂序
+  data.sort((a,b) => new Date(a.ts) - new Date(b.ts));
+
+  const labels = data.map(d => new Date(d.ts));
+  const hr     = data.map(d => isNum(d.hr) ? +d.hr : null);
+  const bpSys  = data.map(d => isNum(d.bp_sys) ? +d.bp_sys : null);
+  const bpDia  = data.map(d => isNum(d.bp_dia) ? +d.bp_dia : null);
+  const temp   = data.map(d => isNum(d.temp) ? +d.temp : null);
+
+  // 共用選項
+  const timeScale = {
+    type: 'time',
+    time: { tooltipFormat: 'yyyy-MM-dd HH:mm', displayFormats: { hour:'MM-dd HH:mm', day:'MM-dd' } }
+  };
+
+  // HR 圖
+  new Chart(document.getElementById('hrChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label: 'Heart Rate (bpm)', data: hr, spanGaps: true, borderWidth: 2, pointRadius: 0 }]
+    },
+    options: {
+      responsive: true,
+      parsing: false,
+      scales: { x: timeScale, y: { title: { display:true, text:'bpm' } } },
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  // 血壓圖（收縮/舒張）
+  new Chart(document.getElementById('bpChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'BP Sys (mmHg)', data: bpSys, spanGaps: true, borderWidth: 2, pointRadius: 0 },
+        { label: 'BP Dia (mmHg)', data: bpDia, spanGaps: true, borderWidth: 2, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true,
+      parsing: false,
+      scales: { x: timeScale, y: { title: { display:true, text:'mmHg' } } },
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  // 體溫圖
+  new Chart(document.getElementById('tempChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label: 'Temperature (°C)', data: temp, spanGaps: true, borderWidth: 2, pointRadius: 0 }]
+    },
+    options: {
+      responsive: true,
+      parsing: false,
+      scales: { x: timeScale, y: { title: { display:true, text:'°C' } } },
+      plugins: { legend: { display: true } }
+    }
+  });
+
+  // 工具函式
+  function isNum(x){ return x !== null && x !== undefined && x !== '' && !Number.isNaN(Number(x)); }
+  function toLocalInput(iso){
+    // 將 ISO 字串轉成 <input type="datetime-local"> 需要的格式
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  // 篩選送出：更新網址參數（會重新渲染）
+  document.getElementById('rangeForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const s = e.target.start.value ? new Date(e.target.start.value).toISOString() : '';
+    const t = e.target.end.value   ? new Date(e.target.end.value).toISOString()   : '';
+    const p = new URLSearchParams();
+    if (s) p.set('start', s);
+    if (t) p.set('end', t);
+    const base = location.pathname;
+    location.href = p.toString() ? `${base}?${p}` : base;
+  });
+})();
+</script>
+{% endblock %}

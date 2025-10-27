@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Medical Analytics</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <nav>
+    <ul><li><strong>Medical Analytics</strong></li></ul>
+    <ul>
+      <li><a href="{{ url_for('home') }}">資料列表</a></li>
+      <li><a href="{{ url_for('upload') }}">上傳 CSV</a></li>
+    </ul>
+  </nav>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <article class="contrast">
+        {% for m in messages %}<p>{{ m }}</p>{% endfor %}
+      </article>
+    {% endif %}
+  {% endwith %}
+
+  <!-- === Quick Add Form === -->
+  <article class="contrast" style="margin-top: 1rem;">
+    <details>
+      <summary><strong>新增一筆紀錄</strong></summary>
+      <form method="post" action="{{ url_for('quick_add') }}" class="grid" style="margin-top: .75rem;">
+        <div>
+          <label>Patient ID
+            <input name="patient_id" placeholder="A001" required />
+          </label>
+        </div>
+        <div>
+          <label>時間 (local)
+            <input type="datetime-local" name="timestamp" required />
+          </label>
+        </div>
+        <div><label>HR <input type="number" name="hr" step="0.1" min="0" placeholder="80"></label></div>
+        <div><label>BP Sys <input type="number" name="bp_sys" step="0.1" min="0" placeholder="120"></label></div>
+        <div><label>BP Dia <input type="number" name="bp_dia" step="0.1" min="0" placeholder="80"></label></div>
+        <div><label>SpO₂ <input type="number" name="spo2" step="0.1" min="0" max="100" placeholder="98"></label></div>
+        <div><label>Temp <input type="number" name="temp" step="0.1" min="0" placeholder="36.6"></label></div>
+        <div style="align-self:end">
+          <button type="submit">新增 / 更新</button>
+        </div>
+      </form>
+      <small></small>
+    </details>
+  </article>
+
+  <script>
+    // 預設填入當下時間
+    (function setNow(){
+      const input = document.querySelector('input[name="timestamp"]');
+      if (!input) return;
+      const d = new Date();
+      const pad = n => String(n).padStart(2,'0');
+      const local = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      input.value = local;
+    })();
+  </script>
+  <!-- === End of Quick Add === -->
+
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

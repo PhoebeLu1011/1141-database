@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block content %}
+<h3>最近資料</h3>
+<table>
+  <thead><tr>
+    <th>patient_id</th><th>ts</th><th>HR</th><th>BP</th><th>SpO₂</th><th>Temp</th><th>Chart</th>
+  </tr></thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td>{{ r.patient_id }}</td>
+      <td>{{ r.ts }}</td>
+      <td>{{ r.hr or "-" }}</td>
+      <td>{{ r.bp_sys or "-" }}/{{ r.bp_dia or "-" }}</td>
+      <td>{{ r.spo2 or "-" }}</td>
+      <td>{{ r.temp or "-" }}</td>
+      <td><a href="{{ url_for('chart', patient_id=r.patient_id) }}">view</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

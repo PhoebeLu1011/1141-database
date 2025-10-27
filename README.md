@@ -170,7 +170,7 @@ The system has been upgraded from using a single database table to a three-table
 - [YouTube link]()
 
 ### | Code:
-- [Code]()
+- [Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW2)
 
 ### | Project Structure:
 ```
