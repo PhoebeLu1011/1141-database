@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  /* 表單排版修正：避免 Pico 的 .grid 造成欄位過窄與重疊 */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: .25rem;
+  }
+  /* 標籤與輸入框完整佔滿，避免壓縮 */
+  label { display: block; }
+  label > input { width: 100%; }
+  /* 讓 details 內容不會覆蓋其他元素 */
+  details, article.contrast, form, table, input, button { position: relative; }
+</style>
+
+<!-- ===== 查詢多筆資料 ===== -->
+<article class="contrast">
+  <h4>查詢多筆資料（find many）</h4>
+  <form method="post">
+    <input type="hidden" name="action" value="find">
+
+    <div class="form-grid">
+      <div><label>Patient ID<input name="q_patient_id" placeholder="A001"></label></div>
+      <div><label>Start<input type="datetime-local" name="q_start"></label></div>
+      <div><label>End<input type="datetime-local" name="q_end"></label></div>
+
+      <div><label>Temp 最小<input type="number" step="0.1" name="q_temp_min"></label></div>
+      <div><label>Temp 最大<input type="number" step="0.1" name="q_temp_max"></label></div>
+      
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">查詢</button>
+    </div>
+  </form>
+
+  {% if find_results and find_results|length > 0 %}
+  <p><small>共 {{ find_results|length }} 筆（取前 200 筆）。</small></p>
+  <div style="max-height:360px; overflow:auto; border:1px solid #ddd; border-radius:8px;">
+    <table>
+      <thead>
+        <tr>
+          <th>patient_id</th><th>ts</th><th>HR</th><th>BP</th><th>SpO₂</th><th>Temp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in find_results %}
+        <tr>
+          <td>{{ r.patient_id }}</td>
+          <td>{{ r.ts }}</td>
+          <td>{{ r.hr or "-" }}</td>
+          <td>{{ r.bp_sys or "-" }}/{{ r.bp_dia or "-" }}</td>
+          <td>{{ r.spo2 or "-" }}</td>
+          <td>{{ r.temp or "-" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

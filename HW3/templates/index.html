@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Travel Journal ✈️</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+      margin: 0; padding: 0; color: #2c3e50;
+      display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+    }
+    header { text-align: center; margin: 40px 0 10px; }
+    header h1 { font-size: 2.2em; margin: 0 0 8px; color: #1976d2; }
+    header p { color: #455a64; font-size: 1.1em; margin: 0; }
+
+    .container { width: 100%; max-width: 1280px; padding: 0 20px 40px; }
+
+    main.grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 28px;
+      align-items: start;
+    }
+
+    form {
+      background: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+    form:hover { transform: translateY(-2px); }
+
+    form h3 {
+      margin: 0 0 14px;
+      color: #1565c0;
+      border-left: 4px solid #64b5f6; padding-left: 10px;
+      font-size: 18px;
+    }
+
+    label { display: block; margin-top: 12px; font-weight: 600; }
+    input, textarea {
+      width: 100%; padding: 10px 12px; margin-top: 6px;
+      border: 1px solid #cfd8dc; border-radius: 8px; font-size: 15px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus, textarea:focus {
+      border-color: #64b5f6; outline: none; box-shadow: 0 0 0 3px rgba(100,181,246,0.25);
+    }
+    button {
+      width: 100%; margin-top: 16px; padding: 12px;
+      background: #1976d2; color: #fff; font-weight: bold; font-size: 16px;
+      border: none; border-radius: 8px; cursor: pointer; transition: all 0.25s ease;
+    }
+    button:hover { background: #0d47a1; transform: translateY(-1px); }
+
+    .response {
+      background: #e3f2fd; border-left: 5px solid #2196f3;
+      padding: 12px; margin-top: 12px; border-radius: 8px;
+      white-space: pre-wrap; font-family: monospace;
+      display: none; color: #0d47a1;
+    }
+
+    /* ===== Table ===== */
+    .table-wrap {
+      border: 1px solid #e0e6eb; border-radius: 12px; overflow: hidden; background: #fff;
+      margin-top: 40px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 14px;
+    }
+    thead th {
+      background: #f7fbff; color: #0d47a1;
+      font-weight: 700; border-bottom: 1px solid #e0e6eb; padding: 10px 12px; text-align: left;
+    }
+    tbody td {
+      border-bottom: 1px solid #eef2f5; padding: 10px 12px; vertical-align: top;
+    }
+    tbody tr:hover { background: #fafcff; }
+    .empty {
+      padding: 18px; text-align: center; color: #748a9d; font-size: 14px;
+      border: 1px dashed #cfd8dc; border-radius: 12px; background: #f9fbfd; margin-top: 30px;
+    }
+
+    footer {
+      margin-top: auto; text-align: center; padding: 15px; color: #607d8b; font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Travel Journal</h1>
+    <p>Submit trips manually, upload files, or paste JSON — all in one place.</p>
+  </header>
+
+  <div class="container">
+    <main class="grid">
+      <!-- === 單筆新增 === -->
+      <form id="singleForm">
+        <h3>Add Single Record</h3>
+        <label>Title:</label>
+        <input type="text" name="title" placeholder="e.g., Kyoto Trip" required>
+
+        <label>Date:</label>
+        <input type="date" name="date">
+
+        <label>City:</label>
+        <input type="text" name="city" placeholder="e.g., Kyoto">
+
+        <label>Country:</label>
+        <input type="text" name="country" placeholder="e.g., Japan">
+
+        <label>Note:</label>
+        <textarea name="note" rows="3" placeholder="Write something about your experience..."></textarea>
+
+        <button type="submit">Submit Record</button>
+        <div id="singleResponse" class="response"></div>
+      </form>
+
+      <!-- === 批次匯入 === -->
+      <form id="bulkForm" enctype="multipart/form-data">
+        <h3>Upload CSV / JSON (Bulk Insert)</h3>
+        <label>Select File:</label>
+        <input type="file" name="file" accept=".csv,.json" required>
+        <button type="submit">Upload File</button>
+        <div id="bulkResponse" class="response"></div>
+      </form>
+
+      <!-- === JSON 手動輸入區 === -->
+      <form id="jsonForm">
+        <h3>Paste JSON Data</h3>
+        <p style="font-size:14px;color:#546e7a;">
+          Example:<br>
+          <code>[{"title":"Kyoto","date":"2025-03-15","city":"Kyoto"}]</code>
+        </p>
+        <textarea id="jsonInput" rows="8" placeholder='[{"title":"Sample Trip","city":"Tokyo","country":"Japan"}]' required></textarea>
+        <button type="submit">Submit JSON</button>
+        <div id="jsonResponse" class="response"></div>
+      </form>
+    </main>
+
+    <!-- === 下方資料表 === -->
+    <section id="dataSection">
+      <h2 style="margin-top:40px;color:#1565c0;">All Travel Records</h2>
+      <div id="emptyMsg" class="empty" style="display:none;">No data yet. Add or upload to see records here.</div>
+      <div class="table-wrap" id="tableWrap" style="display:none;">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>City</th>
+              <th>Country</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <footer>© 2025 Travel Journal — Built with Flask + MongoDB</footer>
+
+  <script>
+    const API = {
+      add: "/api/add",
+      bulk: "/api/bulk",
+      all: "/api/all"
+    };
+
+    const tableWrap = document.getElementById("tableWrap");
+    const emptyMsg = document.getElementById("emptyMsg");
+    const tbody = document.querySelector("#dataTable tbody");
+
+    function renderTable(data) {
+      tbody.innerHTML = "";
+      if (!data || data.length === 0) {
+        tableWrap.style.display = "none";
+        emptyMsg.style.display = "block";
+        return;
+      }
+      tableWrap.style.display = "block";
+      emptyMsg.style.display = "none";
+
+      data.sort((a,b)=> new Date(b.date||0) - new Date(a.date||0));
+      for (const d of data) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${d.date || ""}</td>
+          <td>${d.title || ""}</td>
+          <td>${d.city || ""}</td>
+          <td>${d.country || ""}</td>
+          <td>${d.note || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function loadData() {
+      const res = await fetch(API.all);
+      const json = await res.json();
+      renderTable(json);
+    }
+
+    // 單筆新增
+    document.getElementById("singleForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch(API.add, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      const box = document.getElementById("singleResponse");
+      box.style.display = "block";
+      box.textContent = JSON.stringify(json, null, 2);
+      form.reset();
+      await loadData();
+    });
+
+    // 批次上傳
+    document.getElementById("bulkForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const res = await fetch(API.bulk, { method: "POST", body: formData });
+      const json = await res.json();
+      const box = document.getElementById("bulkResponse");
+      box.style.display = "block";
+      box.textContent = JSON.stringify(json, null, 2);
+      e.target.reset();
+      await loadData();
+    });
+
+    // JSON 手動輸入
+    document.getElementById("jsonForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("jsonInput").value.trim();
+      let jsonData;
+      try { jsonData = JSON.parse(text); }
+      catch { alert("❌ Invalid JSON format."); return; }
+
+      const res = await fetch(API.bulk, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonData)
+      });
+      const json = await res.json();
+      const box = document.getElementById("jsonResponse");
+      box.style.display = "block";
+      box.textContent = JSON.stringify(json, null, 2);
+      e.target.reset();
+      await loadData();
+    });
+
+    // 初次載入
+    loadData();
+  </script>
+</body>
+</html>

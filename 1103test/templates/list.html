@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Medical Analytics</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <style>
+    :root {
+      --color-bg: #f5f4f2;
+      --color-card: #ffffff;
+      --color-accent: #b8b0a0;
+      --color-text: #2e2e2e;
+      --color-link: #6b7a8f;
+      --color-link-hover: #4f5c6b;
+      --color-border: #d8d5d0;
+      --color-table-header: #eceae7;
+      --color-table-row-hover: #f8f8f7;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: "Noto Sans TC", "Segoe UI", Helvetica, Arial, sans-serif;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    main.container {
+      width: 95%;
+      max-width: 1000px;
+      margin: 1.5rem auto;
+      padding: 0 0.5rem;
+    }
+
+    nav {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--color-link);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--color-link-hover); }
+
+    h3, h2, h1 {
+      color: var(--color-accent);
+      font-weight: 600;
+      margin-top: 1.2rem;
+    }
+
+    article.contrast {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    input, select, button, textarea {
+      background: #fafafa;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-text);
+      width: 100%;
+    }
+
+    button {
+      background: var(--color-link);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+      padding: 0.4rem 0.8rem;
+    }
+    button:hover { background: var(--color-link-hover); }
+
+    .table-wrapper { overflow-x: auto; width: 100%; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 700px;
+      background: var(--color-card);
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--color-border);
+      text-align: left;
+      white-space: nowrap;
+    }
+    th { background: var(--color-table-header); font-weight: 600; color: #444; }
+    tr:nth-child(even) td { background: #fcfcfc; }
+    tr:hover td { background: var(--color-table-row-hover); }
+    .row-picked td { background: #e7ede9 !important; transition: 0.3s; }
+
+    details summary { cursor: pointer; color: var(--color-accent); font-weight: 500; }
+    small { color: #888; }
+
+    @media (max-width: 768px) {
+      table { font-size: 0.9rem; }
+      button { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+      th, td { padding: 0.4rem 0.6rem; }
+      nav { flex-direction: column; align-items: flex-start; }
+      nav ul { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+    }
+  </style>
+</head>
+<body>
+<main class="container">
+  <nav>
+    <ul><li><strong style="color:var(--color-accent)">Medical Analytics</strong></li></ul>
+    <ul>
+      <li><a href="{{ url_for('home') }}">資料列表</a></li>
+      <li><a href="{{ url_for('upload') }}">上傳 CSV</a></li>
+      <li><a href="{{ url_for('demo') }}">Search</a></li>
+    </ul>
+  </nav>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <article class="contrast">
+        {% for m in messages %}<p>{{ m }}</p>{% endfor %}
+      </article>
+    {% endif %}
+  {% endwith %}
+
+ <form method="post" action="{{ url_for('quick_add') }}" style="margin-top:.75rem;">
+  <div class="quick-grid">
+    <div class="field w3"><label>Patient ID<input name="patient_id" placeholder="A001" required></label></div>
+    <div class="field w4"><label>時間 (local)<input type="datetime-local" name="timestamp" required></label></div>
+
+    <div class="field"><label>HR<input type="number" name="hr" step="0.1" min="0" placeholder="80"></label></div>
+    <div class="field"><label>BP Sys<input type="number" name="bp_sys" step="0.1" min="0" placeholder="120"></label></div>
+    <div class="field"><label>BP Dia<input type="number" name="bp_dia" step="0.1" min="0" placeholder="80"></label></div>
+    <div class="field"><label>SpO₂<input type="number" name="spo2" step="0.1" min="0" max="100" placeholder="98"></label></div>
+    <div class="field"><label>Temp<input type="number" name="temp" step="0.1" min="0" placeholder="36.6"></label></div>
+
+    <!-- 右側操作區：會自己貼到最右，不會擠到欄位 -->
+    <div class="field full">
+      <div class="quick-actions">
+        <button type="submit">新增 / 更新</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+  <!-- === 列表 === -->
+  <article class="contrast">
+    <h3>資料列表</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th><th>Time (local)</th><th>HR</th><th>BP (sys/dia)</th><th>SpO₂</th><th>Temp</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="data-tbody">
+        {% for r in rows %}
+          <tr>
+            <td>{{ r.patient_id }}</td>
+            <td>{{ r.ts_local_str }}</td>
+            <td>{{ r.hr }}</td>
+            <td>{{ r.bp_sys }}/{{ r.bp_dia }}</td>
+            <td>{{ r.spo2 }}</td>
+            <td>{{ r.temp }}</td>
+            <td>
+              <button type="button" class="edit-row"
+                data-patient_id="{{ r.patient_id }}"
+                data-timestamp="{{ r.ts_local_iso }}"
+                data-hr="{{ r.hr }}"
+                data-bp_sys="{{ r.bp_sys }}"
+                data-bp_dia="{{ r.bp_dia }}"
+                data-spo2="{{ r.spo2 }}"
+                data-temp="{{ r.temp }}"
+              >編輯</button>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <small>按「編輯」可把該列資料帶入上方表單，直接更新（以 patient_id + 時間 為鍵 upsert）。</small>
+  </article>
+
+  <script>
+    // 若表單未填，預設填入現在時間（本地）
+    (function setNow(){
+      const input=document.querySelector('input[name="timestamp"]');
+      if(!input || input.value) return;
+      const d=new Date();
+      const pad=n=>String(n).padStart(2,'0');
+      input.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    })();
+
+    // 點「編輯」→ 回填表單並高亮列
+    (function () {
+      const tbody = document.getElementById('data-tbody');
+      const details = document.querySelector('#quick-panel details');
+      const form = document.querySelector('form[action="{{ url_for("quick_add") }}"]');
+
+      function fillForm(ds) {
+        form.querySelector('input[name="patient_id"]').value = ds.patient_id || '';
+        form.querySelector('input[name="timestamp"]').value  = ds.timestamp || '';
+        form.querySelector('input[name="hr"]').value      = ds.hr ?? '';
+        form.querySelector('input[name="bp_sys"]').value   = ds.bp_sys ?? '';
+        form.querySelector('input[name="bp_dia"]').value   = ds.bp_dia ?? '';
+        form.querySelector('input[name="spo2"]').value     = ds.spo2 ?? '';
+        form.querySelector('input[name="temp"]').value     = ds.temp ?? '';
+      }
+
+      tbody?.addEventListener('click', e => {
+        const btn = e.target.closest('.edit-row');
+        if (!btn) return;
+        tbody.querySelectorAll('tr').forEach(tr => tr.classList.remove('row-picked'));
+        btn.closest('tr')?.classList.add('row-picked');
+        if (details && !details.open) details.open = true;
+        fillForm(btn.dataset);
+        form?.scrollIntoView({behavior:'smooth', block:'center'});
+      });
+    })();
+  </script>
+</main>
+</body>
+</html>
