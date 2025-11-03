@@ -185,7 +185,6 @@ HW2/
 ```
 ### | ERD
 
-<img src="img/HW2_ERD.png" width="400"/>
 
 ### | CRUD
 1. C - Create 
