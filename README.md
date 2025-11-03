@@ -167,7 +167,7 @@ The system has been upgraded from using a single database table to a three-table
 
 ### | Demo Video:
 
-- [YouTube link]()
+- [YouTube link](https://youtu.be/9lEN5L9RIzo)
 
 ### | Code:
 - [Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW2)
@@ -183,6 +183,9 @@ HW2/
 ├── .env
 └── requirements.txt
 ```
+### | ERD
+
+<img src="img/HW2_ERD.png" width="400"/>
 
 ### | CRUD
 1. C - Create 
