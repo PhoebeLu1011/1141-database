@@ -3,8 +3,8 @@
 ## Overview
 |HW|Repo./Code|Video|Description|Render|
 |---|---|---|---|---|
-|HW1|[Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW1)|[YouTube link](https://youtu.be/utjzXJw3qaw)|[Description](#HW1)||
-|HW2|[Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW2)|[YouTube link](https://youtu.be/9lEN5L9RIzo)||[Description](#HW2)|
+|HW1|[Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW1)|[YouTube link](https://youtu.be/utjzXJw3qaw)|[Description](#HW1)|-|
+|HW2|[Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW2)|[YouTube link](https://youtu.be/9lEN5L9RIzo)|[Description](#HW2)|-|
 |HW3|[Repo.]()|||[Render](https://travelrecord.onrender.com)|
 
 
