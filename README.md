@@ -1,6 +1,6 @@
 ## Database System 
 
-## Overview
+## HW Overview
 |HW|Repo./Code|Video|Description|Render|
 |---|---|---|---|---|
 |HW1|[Code](https://github.com/PhoebeLu1011/1141-database/tree/main/HW1)|[YouTube link](https://youtu.be/utjzXJw3qaw)|[Description](#HW1)|-|
@@ -8,7 +8,8 @@
 |HW3|[Repo.](https://github.com/PhoebeLu1011/TravelRecord)|[YouTube link](https://youtu.be/73fwLc9mGh0)|[Description](https://github.com/PhoebeLu1011/TravelRecord)|[Render](https://travelrecord.onrender.com)|
 |HW4|[Repo.](https://github.com/PhoebeLu1011/TravelRecord)|[YouTube link](https://youtu.be/73fwLc9mGh0)|[Description](https://github.com/PhoebeLu1011/TravelRecord)|[Render](https://travelrecord.onrender.com)|
 
-### [Final Project - TKP](https://github.com/MocuAcqu/DB_finalPJ_TKP)
+## Final Project - TKP
+### [Repo.](https://github.com/MocuAcqu/DB_finalPJ_TKP)
 
 
 ## HW1
