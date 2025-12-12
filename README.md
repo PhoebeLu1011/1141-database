@@ -1,8 +1,7 @@
 ## Database System 
 
 ## Final Project - TKP
-### [Repo.](https://github.com/MocuAcqu/DB_finalPJ_TKP)
-### [YT](https://youtu.be/QfTn0Um9Gx0?si=f92HRsoFd3A041fz)
+### [Repo.](https://github.com/MocuAcqu/DB_finalPJ_TKP) / [YT](https://youtu.be/QfTn0Um9Gx0?si=f92HRsoFd3A041fz)
 
 ## HW Overview
 |HW|Repo./Code|Video|Description|Render|
